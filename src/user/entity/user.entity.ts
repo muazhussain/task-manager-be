@@ -1,5 +1,6 @@
 import { CommonEntity } from "src/common/common.entity";
-import { Column, Entity } from "typeorm";
+import { TaskEntity } from "src/task/entity/task.entity";
+import { Column, Entity, OneToMany } from "typeorm";
 
 @Entity('user')
 export class UserEntity extends CommonEntity {
@@ -13,4 +14,7 @@ export class UserEntity extends CommonEntity {
 
     @Column()
     password: string;
+
+    @OneToMany(() => TaskEntity, (task) => task.user,)
+    task: TaskEntity[];
 }

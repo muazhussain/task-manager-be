@@ -6,6 +6,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { LocalGuard } from "../gurads/local.gurad";
 import { Request } from 'express';
 import { UserEntity } from "../entity/user.entity";
+import { SignInDto } from "../dtos/sign-in.dto";
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -26,7 +27,7 @@ export class AuthController {
 
     @Post('sign-in')
     @UseGuards(LocalGuard)
-    async signIn(@Req() req: Request) {
+    async signIn(@Req() req: Request, @Body() payload: SignInDto) {
         try {
             const res = await this.userService.createToken(req.user, req);
             return commonResponse(true, 'Sign in successful', res);

@@ -29,7 +29,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     LocalStrategy,
   ],
   exports: [
-    JwtStrategy,
+    UserService,
   ]
 })
 export class UserModule { }
