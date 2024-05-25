@@ -1,23 +1,25 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { UserService } from "../services/user.service";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
+export class RefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+    constructor(
+        private readonly userService: UserService,
+    ) {
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            jwtFromRequest: ExtractJwt.fromBodyField('refreshToken'),
             ignoreExpiration: false,
             // secretOrKey: 'abc123',
             secretOrKey: process.env.JWT_SECRET,
-            passReqToCallback: true
+            passReqToCallback: true,
         });
     }
 
     async validate(req: Request, payload: any) {
         const currentUserAgent = req.headers['user-agent'];
         const currentDeviceId = req.headers['x-device-id'];
-
         if (payload.userAgent !== currentUserAgent || payload.deviceId !== currentDeviceId) {
             throw new UnauthorizedException();
         }

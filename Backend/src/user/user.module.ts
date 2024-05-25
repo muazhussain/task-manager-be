@@ -5,17 +5,17 @@ import { AuthController } from './controllers/auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
 import { LocalStrategy } from './strategies/local.strategy';
-import { LocalGuard } from './gurads/local.gurad';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { JwtGuard } from './gurads/jwt.guard';
+import { RefreshStrategy } from './strategies/refresh.strategy';
 
 @Module({
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: 'abc123',
+      secret: process.env.JWT_SECRET,
+      // secret: 'abc123',
       signOptions: { expiresIn: '1h' },
     }),
     TypeOrmModule.forFeature([UserEntity]),
@@ -26,10 +26,9 @@ import { JwtGuard } from './gurads/jwt.guard';
   ],
   providers: [
     UserService,
-    LocalGuard,
     LocalStrategy,
     JwtStrategy,
-    JwtGuard,
+    RefreshStrategy,
   ],
   exports: [
     UserService,
