@@ -44,12 +44,12 @@ export class UserService {
         }
     }
 
-    async createToken(curUser, req): Promise<any> {
+    async login(req: any): Promise<any> {
         try {
             const accessToken = this.jwtService.sign(
                 {
-                    id: curUser.id,
-                    username: curUser.username,
+                    id: req.user.id,
+                    username: req.user.username,
                     userAgent: req.headers['user-agent'],
                     deviceId: req.headers['x-device-id'],
                 },
@@ -57,14 +57,36 @@ export class UserService {
             );
             const refreshToken = this.jwtService.sign(
                 {
-                    id: curUser.id,
-                    username: curUser.username,
+                    id: req.user.id,
+                    username: req.user.username,
                     userAgent: req.headers['user-agent'],
                     deviceId: req.headers['x-device-id'],
                 },
                 { expiresIn: '1d' },
             );
-            return { accessToken, refreshToken };
+            return {
+                id: req.user.id,
+                username: req.user.username,
+                accessToken,
+                refreshToken,
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getUserById(id: string): Promise<any> {
+        try {
+            const user = await this.userRepo.findOne({
+                where: {
+                    id: id,
+                },
+            });
+            if (!user) {
+                throw new NotFoundException('User not found');
+            }
+            const { password, ...result } = user;
+            return result;
         } catch (error) {
             throw error;
         }
