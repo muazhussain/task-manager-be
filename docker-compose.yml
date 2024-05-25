@@ -1,0 +1,41 @@
+services:
+  task_manager_api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - PORT=3000
+      - JWT_SECRET=F261D3DC7F1B3
+      - SWAGGER_TITLE=TASK MANAGER API
+      - SWAGGER_DESCRIPTION=Task Manager API
+      - SWAGGER_VERSION=1.0.0
+      - BASIC_AUTH_USER=task_manager_api
+      - BASIC_AUTH_PASSWORD=123456
+      - POSTGRES_HOST=database
+      - POSTGRES_DB=task_manager_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_SYNCHRONIZE=false
+    depends_on:
+      - database
+
+  database:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: task_manager_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:
+    driver: local
