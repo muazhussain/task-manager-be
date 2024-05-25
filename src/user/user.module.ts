@@ -9,6 +9,7 @@ import { LocalGuard } from './gurads/local.gurad';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtGuard } from './gurads/jwt.guard';
 
 @Module({
   imports: [
@@ -27,6 +28,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     UserService,
     LocalGuard,
     LocalStrategy,
+    JwtStrategy,
+    JwtGuard,
   ],
   exports: [
     UserService,
